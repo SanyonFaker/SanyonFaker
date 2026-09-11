@@ -14,7 +14,7 @@ import {
 import { SUPABASE_BUCKET } from "@/lib/env";
 import { DEMO_MODE } from "@/lib/photos";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import type { ActionResult, Exif, PhotoInput } from "@/lib/types";
+import type { ActionResult, Exif, PhotoInput, SiteSettingsInput } from "@/lib/types";
 
 /**
  * Every mutation the CMS performs.
@@ -302,8 +302,82 @@ export async function deleteCollectionAction(slug: string): Promise<ActionResult
 }
 
 /* -------------------------------------------------------------------------- */
+/* Editable site content                                                       */
+/* -------------------------------------------------------------------------- */
+
+const MAX_EQUIPMENT_ITEMS = 24;
+const MAX_EQUIPMENT_LENGTH = 160;
+
+/**
+ * Save the singleton settings row.
+ *
+ * Only the keys present in `patch` are written, so the studio can update the
+ * hero without touching the equipment list and vice versa.
+ */
+export async function saveSiteSettingsAction(
+  patch: SiteSettingsInput,
+): Promise<ActionResult<undefined>> {
+  const identity = await getAdminIdentity();
+  if (!identity) return { ok: false, error: "Not authorised." };
+  if (DEMO_MODE) {
+    return { ok: false, error: "Demo Mode is read-only. Connect Supabase to edit site content." };
+  }
+
+  const update: Record<string, unknown> = {};
+
+  // `null` is meaningful here — it clears the choice and hands the surface back
+  // to its automatic fallback.
+  if ("hero_photo_id" in patch) update.hero_photo_id = uuidOrNull(patch.hero_photo_id);
+  if ("statement_photo_id" in patch) update.statement_photo_id = uuidOrNull(patch.statement_photo_id);
+  if ("equipment" in patch) update.equipment = normaliseEquipment(patch.equipment);
+
+  if (Object.keys(update).length === 0) return { ok: false, error: "Nothing to update." };
+
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    // Upsert rather than update: the row is seeded by the migration, but this
+    // keeps the action working even if it was deleted by hand.
+    const { error } = await supabase
+      .from("site_settings")
+      .upsert({ id: 1, ...update }, { onConflict: "id" });
+
+    if (error) return { ok: false, error: error.message };
+
+    revalidateGallery();
+    return { ok: true, data: undefined };
+  } catch {
+    return { ok: false, error: "Could not save the site content." };
+  }
+}
+
+/* -------------------------------------------------------------------------- */
 /* Helpers                                                                     */
 /* -------------------------------------------------------------------------- */
+
+/** Accept only a well-formed uuid; anything else clears the setting. */
+function uuidOrNull(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(trimmed)
+    ? trimmed
+    : null;
+}
+
+/** Trim, drop blanks, and bound both the count and the length of each line. */
+function normaliseEquipment(value: unknown): string[] {
+  const source = Array.isArray(value) ? value : typeof value === "string" ? value.split("\n") : [];
+
+  const lines: string[] = [];
+  for (const entry of source) {
+    if (typeof entry !== "string") continue;
+    const line = entry.replace(/\0/g, "").replace(/\s+/g, " ").trim().slice(0, MAX_EQUIPMENT_LENGTH);
+    if (line) lines.push(line);
+    if (lines.length >= MAX_EQUIPMENT_ITEMS) break;
+  }
+  return lines;
+}
 
 /** Invalidate every surface that renders photography content. */
 function revalidateGallery(): void {

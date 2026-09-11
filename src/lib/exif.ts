@@ -33,7 +33,28 @@ export function formatShutter(exposureTime: number | null | undefined): string |
   const nearest = standard.reduce((best, value) =>
     Math.abs(value - denominator) < Math.abs(best - denominator) ? value : best,
   );
-  return `1/${nearest}`;
+  return `1/${nearest}s`;
+}
+
+/**
+ * Display guard for shutter values.
+ *
+ * `formatShutter` is the single source of truth, but rows written by an earlier
+ * build stored a bare `1/1000` with no unit. Normalising on the way to the
+ * screen keeps the viewer correct without forcing a data migration.
+ */
+export function displayShutter(value: string | null | undefined): string | null {
+  if (value == null) return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  // Already carries a unit: "1/250s", "2s", "0.5s".
+  if (/s$/i.test(trimmed)) return trimmed;
+  // Reciprocal form without the unit: "1/1000" → "1/1000s".
+  if (/^1\/\d+(\.\d+)?$/.test(trimmed)) return `${trimmed}s`;
+  // Plain seconds without the unit: "2.5" → "2.5s".
+  if (/^\d+(\.\d+)?$/.test(trimmed)) return `${trimmed}s`;
+  return trimmed;
 }
 
 /** `-0.333` → `-0.3 EV` */

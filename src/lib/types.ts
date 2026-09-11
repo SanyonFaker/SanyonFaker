@@ -109,6 +109,37 @@ export type CollectionRow = {
   sort_order: number | null;
 };
 
+/**
+ * Editable site content — the singleton row in `public.site_settings`.
+ *
+ * These are the choices about the *site* rather than about any one photograph:
+ * which image opens the homepage, which image sits beside the statement, and
+ * what equipment is listed.
+ */
+export type SiteSettings = {
+  /** Homepage hero. Falls back to the featured photograph, then the newest. */
+  heroPhotoId: string | null;
+  /** Image beside the About / Statement text. Falls back to the newest photo. */
+  statementPhotoId: string | null;
+  /** Equipment list, one line per entry. */
+  equipment: string[];
+};
+
+/** Exact mirror of a row in `public.site_settings`. */
+export type SiteSettingsRow = {
+  id: number;
+  hero_photo_id: string | null;
+  statement_photo_id: string | null;
+  equipment: string[] | null;
+};
+
+/** Payload accepted by the settings Server Action. */
+export type SiteSettingsInput = {
+  hero_photo_id?: string | null;
+  statement_photo_id?: string | null;
+  equipment?: string[];
+};
+
 /** Fields an administrator may write when creating or editing a photograph. */
 export type PhotoInput = {
   storage_path: string;

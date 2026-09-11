@@ -73,6 +73,26 @@ create table if not exists public.admins (
   created_at timestamptz not null default now()
 );
 
+-- Editable site content. A singleton row (the check constraint makes a second
+-- one impossible) holding the choices the studio makes about the public pages.
+--   hero_photo_id       the homepage hero image
+--   statement_photo_id  the image beside the About / Statement text
+--   equipment           the equipment list on the About page
+-- Both photo columns are nullable with ON DELETE SET NULL, so deleting a
+-- photograph can never leave the settings pointing at a missing row.
+create table if not exists public.site_settings (
+  id                 integer primary key default 1,
+  hero_photo_id      uuid references public.photos (id) on delete set null,
+  statement_photo_id uuid references public.photos (id) on delete set null,
+  equipment          text[] not null default '{}',
+  created_at         timestamptz not null default now(),
+  updated_at         timestamptz not null default now(),
+  constraint site_settings_singleton check (id = 1)
+);
+
+insert into public.site_settings (id) values (1)
+  on conflict (id) do nothing;
+
 
 -- ===========================================================================
 --  2. Column repair
@@ -102,6 +122,10 @@ alter table public.photos add column if not exists taken_at        timestamptz;
 alter table public.collections add column if not exists title_zh    text;
 alter table public.collections add column if not exists description text;
 alter table public.collections add column if not exists sort_order  integer not null default 0;
+
+alter table public.site_settings add column if not exists hero_photo_id      uuid;
+alter table public.site_settings add column if not exists statement_photo_id uuid;
+alter table public.site_settings add column if not exists equipment          text[] not null default '{}';
 
 create index if not exists photos_collection_idx on public.photos (collection_slug);
 create index if not exists photos_sort_idx       on public.photos (sort_order, created_at desc);
@@ -157,9 +181,10 @@ create trigger collections_touch_updated_at
 --  4. Row Level Security
 -- ===========================================================================
 
-alter table public.photos      enable row level security;
-alter table public.collections enable row level security;
-alter table public.admins      enable row level security;
+alter table public.photos        enable row level security;
+alter table public.collections   enable row level security;
+alter table public.admins        enable row level security;
+alter table public.site_settings enable row level security;
 
 -- ------------------------------- public read -------------------------------
 -- Visitors, signed in or not, may read the catalogue.
@@ -200,6 +225,25 @@ create policy "admins read the allow-list"
   on public.admins for select
   to authenticated
   using (public.is_admin());
+
+-- Editable site content: readable by everyone, because the hero image and the
+-- About page are public surfaces.
+drop policy if exists "site settings are publicly readable" on public.site_settings;
+create policy "site settings are publicly readable"
+  on public.site_settings for select
+  using (true);
+
+drop policy if exists "admins manage site settings" on public.site_settings;
+create policy "admins manage site settings"
+  on public.site_settings for all
+  to authenticated
+  using (public.is_admin())
+  with check (public.is_admin());
+
+drop trigger if exists site_settings_touch_updated_at on public.site_settings;
+create trigger site_settings_touch_updated_at
+  before update on public.site_settings
+  for each row execute function public.touch_updated_at();
 
 
 -- ===========================================================================

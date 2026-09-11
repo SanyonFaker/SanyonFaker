@@ -1,8 +1,15 @@
 import { SUPABASE_BUCKET, SUPABASE_URL, isSupabaseConfigured } from "./env";
 import { demoCollectionsWithCovers, demoPhotos } from "./demo-data";
-import { createPublicSupabaseClient } from "./supabase/server";
+import { createPublicSupabaseClient, createServerSupabaseClient } from "./supabase/server";
 import { publicStorageUrl } from "./utils";
-import type { Collection, CollectionRow, Photo, PhotoRow } from "./types";
+import type {
+  Collection,
+  CollectionRow,
+  Photo,
+  PhotoRow,
+  SiteSettings,
+  SiteSettingsRow,
+} from "./types";
 
 /**
  * The single read path for photography content.
@@ -209,6 +216,99 @@ function byRecency(a: Photo, b: Photo): number {
   const left = new Date(a.takenAt ?? a.createdAt).getTime();
   const right = new Date(b.takenAt ?? b.createdAt).getTime();
   return right - left;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Editable site content                                                       */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Starting equipment list. Used in Demo Mode, and as the fallback before the
+ * studio has saved anything — so the About page is never empty.
+ */
+export const DEFAULT_EQUIPMENT: string[] = [
+  "Sony α7R V · α7 IV · α7S III",
+  "FE 16-35mm F2.8 GM · FE 24-70mm F2.8 GM II",
+  "FE 35mm F1.4 GM · FE 85mm F1.4 GM II · FE 135mm F1.8 GM",
+  "FE 70-200mm F2.8 GM OSS II",
+  "Leica Q3 · Leica M11 Monochrom",
+  "DJI Mavic 3 Pro",
+];
+
+export const DEFAULT_SITE_SETTINGS: SiteSettings = {
+  heroPhotoId: null,
+  statementPhotoId: null,
+  equipment: DEFAULT_EQUIPMENT,
+};
+
+/**
+ * Read the singleton settings row.
+ *
+ * Degrades to `DEFAULT_SITE_SETTINGS` on any failure — including the table not
+ * existing yet, which is the state before `supabase/add-site-settings.sql` has
+ * been applied. The public pages must never break because of a missing
+ * optional feature.
+ */
+export async function getSiteSettings(): Promise<SiteSettings> {
+  if (DEMO_MODE) return DEFAULT_SITE_SETTINGS;
+
+  try {
+    const supabase = createPublicSupabaseClient();
+    const { data, error } = await supabase
+      .from("site_settings")
+      .select("id,hero_photo_id,statement_photo_id,equipment")
+      .eq("id", 1)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) return DEFAULT_SITE_SETTINGS;
+
+    const row = data as unknown as SiteSettingsRow;
+    const equipment = (row.equipment ?? []).map((item) => item.trim()).filter(Boolean);
+
+    return {
+      heroPhotoId: row.hero_photo_id ?? null,
+      statementPhotoId: row.statement_photo_id ?? null,
+      // An empty list means "not configured yet", not "show nothing".
+      equipment: equipment.length > 0 ? equipment : DEFAULT_EQUIPMENT,
+    };
+  } catch (error) {
+    console.error("[enpei] getSiteSettings failed:", describe(error));
+    return DEFAULT_SITE_SETTINGS;
+  }
+}
+
+/**
+ * Whether the settings table exists, so the studio can tell an operator to run
+ * the migration instead of silently showing disabled controls.
+ */
+export async function isSiteSettingsReady(): Promise<boolean> {
+  if (DEMO_MODE) return false;
+
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { error } = await supabase.from("site_settings").select("id").limit(1);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Resolve a settings photo id against the archive, with a sensible fallback so
+ * the surface is never missing its image.
+ */
+export function pickSettingsPhoto(
+  photos: Photo[],
+  photoId: string | null,
+  fallback?: Photo | null,
+): Photo | null {
+  if (photoId) {
+    const chosen = photos.find((photo) => photo.id === photoId);
+    if (chosen) return chosen;
+  }
+  if (fallback) return fallback;
+  return photos.find((photo) => photo.featured) ?? photos[0] ?? null;
 }
 
 function describe(error: unknown): string {

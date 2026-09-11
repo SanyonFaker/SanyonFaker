@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { formatMonthYear } from "@/lib/utils";
-import { hasDisplayableExif } from "@/lib/exif";
+import { displayShutter, hasDisplayableExif } from "@/lib/exif";
 import type { Photo } from "@/lib/types";
 
 /**
@@ -19,7 +19,7 @@ export function ExifReadout({ photo, compact = false }: { photo: Photo; compact?
   const capture: Array<[string, string | null | undefined]> = [
     ["Focal", exif.focalLength],
     ["Aperture", exif.aperture],
-    ["Shutter", exif.shutter],
+    ["Shutter", displayShutter(exif.shutter)],
     ["ISO", exif.iso != null ? String(exif.iso) : null],
     ["Exposure", exif.exposureCompensation],
     ["White bal.", exif.whiteBalance],
@@ -104,7 +104,7 @@ export function ExifLine({ photo }: { photo: Photo }) {
   const parts = [
     photo.exif.focalLength,
     photo.exif.aperture,
-    photo.exif.shutter,
+    displayShutter(photo.exif.shutter),
     photo.exif.iso != null ? `ISO ${photo.exif.iso}` : null,
   ].filter((value): value is string => Boolean(value));
 

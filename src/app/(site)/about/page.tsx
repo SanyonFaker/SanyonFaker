@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Reveal, RevealRule } from "@/components/ui/reveal";
-import { getPhotos } from "@/lib/photos";
+import { getPhotos, getSiteSettings, pickSettingsPhoto } from "@/lib/photos";
 
 export const revalidate = 300;
 
@@ -28,18 +28,13 @@ const SERVICES = [
   },
 ];
 
-const KIT = [
-  "Sony α7R V · α7 IV · α7S III",
-  "FE 16-35mm F2.8 GM · FE 24-70mm F2.8 GM II",
-  "FE 35mm F1.4 GM · FE 85mm F1.4 GM II · FE 135mm F1.8 GM",
-  "FE 70-200mm F2.8 GM OSS II",
-  "Leica Q3 · Leica M11 Monochrom",
-  "DJI Mavic 3 Pro",
-];
-
 export default async function AboutPage() {
-  const photos = await getPhotos({ limit: 6 });
-  const portrait = photos[0] ?? null;
+  const [photos, settings] = await Promise.all([getPhotos(), getSiteSettings()]);
+
+  // The statement portrait is chosen in the studio; until one is picked it
+  // falls back to the featured photograph, then the newest.
+  const portrait = pickSettingsPhoto(photos, settings.statementPhotoId);
+  const kit = settings.equipment;
 
   return (
     <>
@@ -149,8 +144,8 @@ export default async function AboutPage() {
           </div>
           <div className="md:col-span-8 md:col-start-5">
             <ul className="space-y-4">
-              {KIT.map((item, index) => (
-                <Reveal key={item} delay={index * 0.04}>
+              {kit.map((item, index) => (
+                <Reveal key={`${index}-${item}`} delay={Math.min(index, 8) * 0.04}>
                   <li className="flex items-baseline gap-5 border-b border-hairline pb-4 text-[14px] text-silver">
                     <span className="font-mono text-[10px] text-ash tnum">
                       {String(index + 1).padStart(2, "0")}

@@ -7,24 +7,26 @@ import { ArrowUpRight, FolderOpen, Images, LogOut, Star, UploadCloud } from "luc
 
 import { signOutAction } from "@/app/admin/actions";
 import { CollectionManager } from "./collection-manager";
+import { ContentManager } from "./content-manager";
 import { PermissionBanner, type PermissionIssue } from "./permission-banner";
 import { PhotoLibrary } from "./photo-library";
 import { Uploader } from "./uploader";
 import { formatMonthYear } from "@/lib/utils";
-import type { Collection, Photo } from "@/lib/types";
+import type { Collection, Photo, SiteSettings } from "@/lib/types";
 
-type Tab = "library" | "upload" | "collections";
+type Tab = "library" | "upload" | "collections" | "content";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "library", label: "Library" },
   { id: "upload", label: "Upload" },
   { id: "collections", label: "Collections" },
+  { id: "content", label: "Content" },
 ];
 
 /**
  * Studio dashboard.
  *
- * One client boundary, three panes. All writes are Server Actions; all reads
+ * One client boundary, four panes. All writes are Server Actions; all reads
  * arrive already resolved from the Server Component that rendered this tree.
  */
 export function AdminDashboard({
@@ -32,6 +34,8 @@ export function AdminDashboard({
   mode,
   photos,
   collections,
+  settings,
+  settingsReady,
   canWrite,
   blockedReason,
   permissionIssue,
@@ -40,6 +44,10 @@ export function AdminDashboard({
   mode: "supabase" | "demo";
   photos: Photo[];
   collections: Collection[];
+  /** Editable site content: hero image, statement image, equipment list. */
+  settings: SiteSettings;
+  /** False until `supabase/add-site-settings.sql` has been applied. */
+  settingsReady: boolean;
   canWrite: boolean;
   blockedReason: string | null;
   /** Set when the database's own allow-list rejects this account. */
@@ -193,6 +201,17 @@ export function AdminDashboard({
                   blockedReason={blockedReason}
                 />
               </div>
+            ) : null}
+
+            {tab === "content" ? (
+              <ContentManager
+                settings={settings}
+                photos={photos}
+                collections={collections}
+                canWrite={canWrite}
+                blockedReason={blockedReason}
+                tableReady={settingsReady}
+              />
             ) : null}
           </motion.div>
         </div>

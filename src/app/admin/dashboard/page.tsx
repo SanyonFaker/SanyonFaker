@@ -1,6 +1,6 @@
 import { AdminDashboard } from "@/components/admin/dashboard";
 import { requireAdmin } from "@/lib/auth";
-import { DEMO_MODE, getCollections, getPhotos } from "@/lib/photos";
+import { DEMO_MODE, getCollections, getPhotos, getSiteSettings, isSiteSettingsReady } from "@/lib/photos";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 /**
@@ -14,10 +14,12 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 export default async function StudioDashboardPage() {
   const identity = await requireAdmin();
 
-  const [photos, collections, access] = await Promise.all([
+  const [photos, collections, access, settings, settingsReady] = await Promise.all([
     getPhotos(),
     getCollections(),
     checkDatabaseAccess(),
+    getSiteSettings(),
+    isSiteSettingsReady(),
   ]);
 
   const canWrite = !DEMO_MODE && access.ok;
@@ -31,6 +33,8 @@ export default async function StudioDashboardPage() {
       mode={identity.mode}
       photos={photos}
       collections={collections}
+      settings={settings}
+      settingsReady={settingsReady}
       canWrite={canWrite}
       blockedReason={blockedReason}
       /**

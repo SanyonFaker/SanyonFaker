@@ -6,7 +6,7 @@ import { Hero } from "@/components/home/hero";
 import { MasonryGallery } from "@/components/gallery/masonry-gallery";
 import { CollectionGridSkeleton, GallerySkeleton } from "@/components/gallery/photo-tile";
 import { Reveal, RevealRule } from "@/components/ui/reveal";
-import { getCollections, getPhotos } from "@/lib/photos";
+import { getCollections, getPhotos, getSiteSettings, pickSettingsPhoto } from "@/lib/photos";
 
 /** Gallery pages are regenerated on an interval rather than on every request. */
 export const revalidate = 300;
@@ -89,9 +89,15 @@ export default function HomePage() {
 /* -------------------------------------------------------------------------- */
 
 async function HomeHero() {
-  const [photos, collections] = await Promise.all([getPhotos({ limit: 12 }), getCollections()]);
+  const [photos, collections, settings] = await Promise.all([
+    getPhotos(),
+    getCollections(),
+    getSiteSettings(),
+  ]);
 
-  const heroPhoto = photos.find((photo) => photo.featured) ?? photos[0] ?? null;
+  // The studio can pin an explicit hero; otherwise the featured photograph
+  // wins, then the newest.
+  const heroPhoto = pickSettingsPhoto(photos, settings.heroPhotoId);
   const total = collections.reduce((sum, collection) => sum + collection.photoCount, 0);
 
   return (
