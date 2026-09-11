@@ -1,0 +1,254 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   LUMEN — design tokens
+   A deliberately narrow palette: deep neutrals so the photographs carry all
+   of the colour, plus a single brass accent used only for state and focus.
+   ========================================================================== */
+@theme {
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* Surfaces — stacked from deepest page background upward */
+  --color-void: #07070a;
+  --color-ink: #0b0b0f;
+  --color-surface: #121216;
+  --color-raised: #191920;
+  --color-line: #232329;
+  --color-hairline: #1b1b21;
+
+  /* Type */
+  --color-chalk: #ededeb;
+  --color-silver: #a2a2ac;
+  --color-mist: #6d6d78;
+  --color-ash: #4a4a54;
+
+  /* Accent — soft brass. Use sparingly. */
+  --color-brass: #c8a87c;
+  --color-brass-dim: #8a7452;
+
+  /* Motion */
+  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-swift: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --animate-shimmer: shimmer 1.9s linear infinite;
+  --animate-breathe: breathe 4.5s var(--ease-silk) infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -160% 0;
+  }
+  100% {
+    background-position: 260% 0;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  :root {
+    color-scheme: dark;
+    /* Consumed by the Lightbox to lock the page without layout shift. */
+    --scrollbar-width: 0px;
+  }
+
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    background-color: var(--color-void);
+    -webkit-tap-highlight-color: transparent;
+    /* Next.js 16 removed automatic smooth scrolling; Lenis owns this. */
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-chalk);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+    font-variant-ligatures: contextual;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-brass);
+    color: #0a0a0c;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-brass);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+
+  /* WebKit — a hairline scrollbar that matches the chrome */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-line);
+    border: 3px solid var(--color-void);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-ash);
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-mist);
+  }
+
+  /* Hide the native number spinners inside the EXIF editor. */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   Lenis smooth-scroll runtime styles
+   Vendored so the bundle does not depend on an internal CSS path.
+   ========================================================================== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Composed utilities
+   ========================================================================== */
+@utility text-micro {
+  font-size: 0.625rem;
+  line-height: 1;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+@utility text-label {
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@utility hairline-t {
+  border-top: 1px solid var(--color-hairline);
+}
+
+@utility hairline-b {
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+@utility grain {
+  position: relative;
+}
+
+/* A very faint film grain, applied as a pseudo-element overlay. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Skeleton sweep used by the gallery loading state. */
+.shimmer {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-surface) 20%,
+    var(--color-raised) 42%,
+    var(--color-surface) 64%
+  );
+  background-size: 220% 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* Masks the top/bottom of scroll regions with the page background. */
+.fade-edges {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 28px,
+    #000 calc(100% - 28px),
+    transparent 100%
+  );
+}
+
+/* Utility for the EXIF readout so numbers stay optically aligned in columns. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
