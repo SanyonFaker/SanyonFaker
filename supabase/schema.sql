@@ -1,5 +1,5 @@
 -- ===========================================================================
---  LUMEN - Supabase schema
+--  ENPEI - Supabase schema
 -- ===========================================================================
 --  Run this once, in Supabase Dashboard -> SQL Editor -> New query.
 --  It is idempotent: re-running it is always safe, and it will repair a

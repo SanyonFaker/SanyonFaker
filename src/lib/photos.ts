@@ -94,7 +94,7 @@ export async function getPhotos(filter: PhotoFilter = {}): Promise<Photo[]> {
 
     return ((data ?? []) as unknown as PhotoRow[]).map(mapPhotoRow);
   } catch (error) {
-    console.error("[lumen] getPhotos failed:", describe(error));
+    console.error("[enpei] getPhotos failed:", describe(error));
     return [];
   }
 }
@@ -116,7 +116,7 @@ export async function getPhotoById(id: string): Promise<Photo | null> {
     if (error) throw error;
     return data ? mapPhotoRow(data as unknown as PhotoRow) : null;
   } catch (error) {
-    console.error("[lumen] getPhotoById failed:", describe(error));
+    console.error("[enpei] getPhotoById failed:", describe(error));
     return null;
   }
 }
@@ -177,7 +177,7 @@ export async function getCollections(): Promise<Collection[]> {
       };
     });
   } catch (error) {
-    console.error("[lumen] getCollections failed:", describe(error));
+    console.error("[enpei] getCollections failed:", describe(error));
     return [];
   }
 }

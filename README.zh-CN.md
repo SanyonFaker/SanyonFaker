@@ -1,6 +1,6 @@
 <div align="center">
 
-# LUMEN
+# ENPEI
 
 **高级个人摄影作品展示网站 · 内置 Supabase 后台管理系统**
 
@@ -128,7 +128,7 @@ pnpm dev
 已经预设了一个演示密码：
 
 1. 打开 <http://localhost:3000/admin>
-2. 邮箱随便填，密码填 `lumen-studio-preview`
+2. 邮箱随便填，密码填 `enpei-studio-preview`
 3. 真实的仪表盘界面就会打开（只读）
 
 > 这个演示密码只在 Supabase 未配置时生效。一旦设置了

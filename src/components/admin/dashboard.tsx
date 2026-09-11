@@ -73,7 +73,7 @@ export function AdminDashboard({
         <div className="mx-auto flex max-w-[1500px] flex-wrap items-center justify-between gap-4 px-5 py-3.5 md:px-8">
           <div className="flex items-center gap-5">
             <Link href="/admin/dashboard" className="flex items-baseline gap-2">
-              <span className="text-[12px] font-medium tracking-[0.4em] text-chalk">LUMEN</span>
+              <span className="text-[12px] font-medium tracking-[0.4em] text-chalk">ENPEI</span>
               <span className="text-micro text-mist">Studio</span>
             </Link>
 

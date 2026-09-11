@@ -16,7 +16,7 @@ import { createServerSupabaseClient } from "./supabase/server";
  * (edge) bundle — `proxy.ts` deliberately stays on the optimistic cookie check.
  */
 
-export const DEMO_ADMIN_COOKIE = "lumen_demo_admin";
+export const DEMO_ADMIN_COOKIE = "enpei_demo_admin";
 
 export type AdminIdentity = {
   email: string;
@@ -60,7 +60,7 @@ export function isDemoAdminEnabled(): boolean {
 function demoAdminToken(): string | null {
   const password = process.env.DEMO_ADMIN_PASSWORD ?? "";
   if (!isDemoAdminEnabled()) return null;
-  return createHmac("sha256", password).update("lumen::demo-admin::v1").digest("hex");
+  return createHmac("sha256", password).update("enpei::demo-admin::v1").digest("hex");
 }
 
 function safeEqual(a: string, b: string): boolean {

@@ -1,5 +1,5 @@
 -- ============================================================
--- LUMEN - optional backfill: correct the recorded pixel sizes
+-- ENPEI - optional backfill: correct the recorded pixel sizes
 -- ============================================================
 -- Three photographs uploaded before the ingest pipeline was fixed
 -- recorded the ORIGINAL file's dimensions instead of the served

@@ -1,9 +1,9 @@
 @echo off
-title LUMEN - Photography Portfolio
+title ENPEI - Photography Portfolio
 cd /d "%~dp0"
 
 echo.
-echo   LUMEN - Photography Portfolio
+echo   ENPEI - Photography Portfolio
 echo   ==============================
 echo.
 
@@ -31,7 +31,7 @@ if not exist "node_modules" (
 
 echo   [2/2] Starting the local server...
 echo.
-start "LUMEN Dev Server" cmd /k "pnpm dev"
+start "ENPEI Dev Server" cmd /k "pnpm dev"
 
 echo   Waiting for the server to come up...
 rem  `timeout` fails when stdin is redirected, so ping is used as the delay.
@@ -43,7 +43,7 @@ echo.
 echo   Browser opened at  http://localhost:3000
 echo   Studio (admin) at  http://localhost:3000/admin
 echo.
-echo   To stop the site, close the window titled "LUMEN Dev Server".
+echo   To stop the site, close the window titled "ENPEI Dev Server".
 echo.
 ping -n 9 127.0.0.1 >nul
 exit /b 0

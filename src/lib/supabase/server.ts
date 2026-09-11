@@ -42,6 +42,6 @@ export async function createServerSupabaseClient() {
 export function createPublicSupabaseClient() {
   return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-    global: { headers: { "x-application-name": "lumen-public" } },
+    global: { headers: { "x-application-name": "enpei-public" } },
   });
 }

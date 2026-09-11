@@ -12,17 +12,17 @@ export function SiteFooter({ collections }: { collections: Collection[] }) {
         <div className="grid gap-14 md:grid-cols-12">
           {/* Identity + contact */}
           <div className="md:col-span-5">
-            <p className="text-[13px] font-medium tracking-[0.42em] text-chalk">LUMEN</p>
+            <p className="text-[13px] font-medium tracking-[0.42em] text-chalk">ENPEI</p>
             <p className="mt-6 max-w-sm text-sm leading-relaxed text-silver">
               Photography of land, people and the built world. Commissions, editorial and
               documentary work worldwide.
             </p>
 
             <a
-              href="mailto:studio@example.com"
+              href="mailto:2211046629@qq.com"
               className="group mt-8 inline-flex items-center gap-2 text-sm text-chalk transition-colors duration-300 hover:text-brass"
             >
-              studio@example.com
+              2211046629@qq.com
               <ArrowUpRight
                 size={14}
                 strokeWidth={1.5}
@@ -56,9 +56,10 @@ export function SiteFooter({ collections }: { collections: Collection[] }) {
             <p className="text-micro text-mist">Elsewhere</p>
             <ul className="mt-6 space-y-3">
               {[
-                { label: "Instagram", href: "https://instagram.com" },
-                { label: "Behance", href: "https://behance.net" },
-                { label: "Vimeo", href: "https://vimeo.com" },
+                { label: "Instagram", href: "https://www.instagram.com/sanyoonlee/" },
+                // Add more as you like — each entry renders a row here.
+                // { label: "Behance", href: "https://behance.net/your-handle" },
+                // { label: "小红书", href: "https://www.xiaohongshu.com/user/profile/..." },
               ].map((item) => (
                 <li key={item.label}>
                   <a
@@ -76,7 +77,7 @@ export function SiteFooter({ collections }: { collections: Collection[] }) {
         </div>
 
         <div className="mt-16 flex flex-col gap-4 border-t border-hairline pt-8 text-[11px] text-ash sm:flex-row sm:items-center sm:justify-between md:mt-24">
-          <p>© {year} LUMEN Studio. All photographs are protected works.</p>
+          <p>© {year} ENPEI Studio. All photographs are protected works.</p>
           <p className="flex items-center gap-2">
             <span className="inline-block h-1 w-1 rounded-full bg-brass-dim" />
             Built with Next.js, Supabase &amp; Framer Motion

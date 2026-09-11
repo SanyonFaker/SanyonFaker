@@ -58,10 +58,10 @@ export function SiteHeader({ collections }: { collections: Collection[] }) {
           <Link
             href="/"
             className="group relative z-10 flex items-baseline gap-2"
-            aria-label="LUMEN — home"
+            aria-label="ENPEI — home"
           >
             <span className="text-[13px] font-medium tracking-[0.42em] text-chalk transition-opacity duration-300 group-hover:opacity-70">
-              LUMEN
+              ENPEI
             </span>
             <span className="hidden text-micro text-mist sm:inline">Studio</span>
           </Link>

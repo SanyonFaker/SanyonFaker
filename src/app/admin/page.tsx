@@ -37,7 +37,7 @@ export default async function AdminLoginPage() {
             Back to site
           </Link>
 
-          <span className="text-[11px] tracking-[0.42em] text-ash">LUMEN</span>
+          <span className="text-[11px] tracking-[0.42em] text-ash">ENPEI</span>
         </div>
 
         <div className="flex flex-1 items-center py-16">

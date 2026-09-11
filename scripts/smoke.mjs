@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * LUMEN — interaction smoke test.
+ * ENPEI — interaction smoke test.
  *
  * Drives a real headless Chrome over the DevTools Protocol and asserts the
  * design contract that the stylesheet promises. Assertions about CSS classes
@@ -28,7 +28,7 @@ import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const BASE = (process.argv[2] ?? process.env.LUMEN_URL ?? "http://127.0.0.1:3213").replace(
+const BASE = (process.argv[2] ?? process.env.ENPEI_URL ?? "http://127.0.0.1:3213").replace(
   /\/+$/,
   "",
 );
@@ -66,7 +66,7 @@ async function launchBrowser() {
     );
   }
 
-  const profile = await mkdtemp(join(tmpdir(), "lumen-smoke-"));
+  const profile = await mkdtemp(join(tmpdir(), "enpei-smoke-"));
 
   // `stdio: 'ignore'` keeps the browser fully detached from this process.
   const child = spawn(
@@ -516,7 +516,7 @@ async function main() {
   const failed = results.filter((r) => r.status === "FAIL").length;
   const skipped = results.filter((r) => r.status === "SKIP").length;
 
-  console.log("\n  LUMEN · interaction smoke test");
+  console.log("\n  ENPEI · interaction smoke test");
   console.log("  " + "─".repeat(74));
   for (const r of results) {
     const mark = r.status === "PASS" ? "PASS" : r.status === "FAIL" ? "FAIL" : "SKIP";

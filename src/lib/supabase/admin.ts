@@ -14,6 +14,6 @@ export function createServiceRoleClient(): SupabaseClient | null {
 
   return createClient(SUPABASE_URL, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-    global: { headers: { "x-application-name": "lumen-service" } },
+    global: { headers: { "x-application-name": "enpei-service" } },
   });
 }

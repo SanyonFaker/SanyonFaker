@@ -31,7 +31,7 @@ export async function generateMetadata({
       collection.description ??
       `${collection.title} — a collection of ${collection.photoCount} photographs.`,
     openGraph: {
-      title: `${collection.title} — LUMEN`,
+      title: `${collection.title} — ENPEI`,
       description: collection.description ?? undefined,
       images: collection.coverSrc ? [collection.coverSrc] : undefined,
     },

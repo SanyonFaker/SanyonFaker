@@ -97,7 +97,7 @@ async function HomeHero() {
   return (
     <Hero
       photo={heroPhoto}
-      eyebrow="Selected work · 2019 — 2026"
+      eyebrow="Enpei · Selected work 2019 — 2026"
       headline="Photography of land, people and the built world."
       meta={[
         `${String(total).padStart(2, "0")} photographs`,

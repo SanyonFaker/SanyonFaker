@@ -14,22 +14,38 @@ import { SITE_URL } from "@/lib/env";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "LUMEN — Photography",
-    template: "%s — LUMEN",
+    default: "ENPEI — Photography",
+    template: "%s — ENPEI",
   },
   description:
-    "Selected photography of land, people and the built world. A personal archive of landscapes, documentary events, portraits and architecture.",
-  keywords: ["photography", "portfolio", "landscape", "documentary", "fine art", "摄影作品"],
-  authors: [{ name: "LUMEN Studio" }],
+    "Photography by Enpei — landscapes, documentary events, portraits, street and architecture. An ongoing personal archive.",
+  keywords: [
+    "Enpei",
+    "photography",
+    "portfolio",
+    "landscape",
+    "documentary",
+    "fine art",
+    "摄影作品",
+    "摄影",
+  ],
+  authors: [{ name: "Enpei", url: "https://www.instagram.com/sanyoonlee/" }],
+  creator: "Enpei",
   openGraph: {
     type: "website",
-    siteName: "LUMEN",
-    title: "LUMEN — Photography",
+    siteName: "ENPEI",
+    title: "ENPEI — Photography",
     description:
-      "Selected photography of land, people and the built world. Landscapes, events, portraits and architecture.",
+      "Photography by Enpei — landscapes, documentary events, portraits, street and architecture.",
     url: SITE_URL,
+    locale: "en_US",
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image",
+    title: "ENPEI — Photography",
+    description:
+      "Photography by Enpei — landscapes, documentary events, portraits, street and architecture.",
+  },
   robots: { index: true, follow: true },
 };
 

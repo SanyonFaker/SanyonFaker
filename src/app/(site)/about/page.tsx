@@ -53,7 +53,7 @@ export default async function AboutPage() {
 
             <Reveal delay={0.06}>
               <h1 className="mt-5 text-[clamp(2.1rem,5.6vw,4.2rem)] font-light leading-[1.03] tracking-[-0.032em] text-chalk">
-                An independent photographer, working slowly and on foot.
+                Enpei — an independent photographer, working slowly and on foot.
               </h1>
             </Reveal>
 
@@ -81,10 +81,10 @@ export default async function AboutPage() {
 
             <Reveal delay={0.18}>
               <a
-                href="mailto:studio@example.com"
+                href="mailto:2211046629@qq.com"
                 className="group mt-11 inline-flex items-center gap-2 border-b border-line pb-2 text-[13px] text-chalk transition-colors duration-300 hover:border-brass hover:text-brass"
               >
-                studio@example.com
+                2211046629@qq.com
                 <ArrowUpRight
                   size={14}
                   strokeWidth={1.5}

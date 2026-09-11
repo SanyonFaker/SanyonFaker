@@ -1,6 +1,6 @@
 <div align="center">
 
-# LUMEN
+# ENPEI
 
 **A high-end personal photography portfolio with a Supabase-powered studio.**
 
@@ -135,7 +135,7 @@ To preview the studio before configuring anything, the included `.env.local`
 already sets a demo password:
 
 1. Go to <http://localhost:3000/admin>
-2. Enter any e-mail address and the password `lumen-studio-preview`
+2. Enter any e-mail address and the password `enpei-studio-preview`
 3. The real dashboard opens, read-only
 
 > The demo password only works while Supabase is unconfigured. The moment
