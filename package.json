@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "LUMEN — a high-end personal photography portfolio with a Supabase-powered headless CMS.",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
